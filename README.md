@@ -44,5 +44,5 @@ Sie müssen nicht länger in Ihren Unterlagen suchen – alle wichtigen Informat
    cd loan-tracker
    docker-compose up -d
 
-
-
+2. **Öffnen Sie Ihren Browser**:
+    Gehen Sie zu http://localhost:5000, um die App zu verwenden.
