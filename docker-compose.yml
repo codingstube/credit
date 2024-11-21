@@ -1,0 +1,17 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+  loan-tracker:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./data/instance:/app/instance  # Persist the SQLite database
+      - ./loan_tracker.py:/app/loan_tracker.py  # Mount application code
+      - ./templates:/app/templates  # Mount templates directory
+    environment:
+      - FLASK_APP=loan_tracker.py
+      - FLASK_ENV=development
+      - PYTHONUNBUFFERED=1  # This ensures Python output isn't buffered, better for debugging
+    restart: always

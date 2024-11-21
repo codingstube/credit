@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kreditübersicht</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 90%;
+            max-width: 1000px;
+            margin: 20px 0;
+            background-color: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #007BFF;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        td {
+            color: #333;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .button {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+
+        .delete-button {
+            background-color: #DC3545;
+        }
+
+        .delete-button:hover {
+            background-color: #b02a37;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="/static/images/logo.png" alt="Loan Tracker Logo">
+    </header>
+    <h1>Kreditübersicht</h1>
+    <div class="buttons">
+        <a href="{{ url_for('add_loan') }}" class="button">Neuen Kredit hinzufügen</a>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Darlehensbetrag</th>
+                <th>Zinssatz</th>
+                <th>Monatliche Rate</th>
+                <th>Verbleibende Monate</th>
+                <th>Verbleibende Zinsen</th>
+                <th>Restschuld</th>
+                <th>Gesamte Restschuld</th>
+                <th>Enddatum</th>
+                <th>Aktionen</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for loan in loans %}
+            <tr>
+                <td>{{ loan.name }}</td>
+                <td>{{ loan.principal | format_currency }}</td>
+                <td>{{ loan.interest_rate | round(2) }} %</td>
+                <td>{{ loan.monthly_payment | format_currency }}</td>
+                <td>{{ loan.months_remaining() }}</td>
+                <td>{{ loan.calculate_remaining_interest() | format_currency }}</td>
+                <td>{{ loan.calculate_remaining_principal() | format_currency }}</td>
+                <td>{{ loan.calculate_remaining_balance() | format_currency }}</td>
+                <td>{{ loan.calculate_end_date() }}</td>
+                <td>
+                    <div style="display: flex; gap: 10px; justify-content: center;">
+                        <a href="{{ url_for('edit_loan', id=loan.id) }}" class="button">Bearbeiten</a>
+                        <form method="POST" action="{{ url_for('delete_loan', id=loan.id) }}">
+                            <button type="submit" class="button delete-button">Löschen</button>
+                        </form>
+                    </div>
+                </td>
+                
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
